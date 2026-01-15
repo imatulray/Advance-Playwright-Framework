@@ -9,8 +9,15 @@ A modular, scalable test automation framework built with **Playwright** and **Ty
 ## 📊 Architecture Documentation
 
 For a comprehensive visual architecture guide, see:
+
 - 📄 **[Architecture Diagram (HTML)](docs/ARCHITECTURE.html)** - Interactive visual documentation
 - 📋 **[Quick Reference Guide](docs/QUICK_REFERENCE.md)** - Commands and best practices
+
+### Architecture Overview
+
+<p align="center">
+  <img src="docs/images/arch.png" alt="Playwright Framework Architecture" width="800"/>
+</p>
 
 ---
 
@@ -405,6 +412,59 @@ const uuid = DataGenerator.uuid(); // 550e8400-e29b-41d4-a716-446655440000
 
 ---
 
+## 📊 Custom TTA Reporter
+
+This framework includes a **Custom TTA Reporter** - a beautiful, modern HTML reporter with real-time test execution updates.
+
+### Features
+
+| Feature | Description |
+|---------|-------------|
+| 🎨 **Modern UI** | Green-themed design with Google Fonts (Inter, JetBrains Mono) |
+| 📊 **Stats Dashboard** | 6 metric cards showing Total, Passed, Failed, Skipped, Pass Rate, Duration |
+| 📋 **Console Logs per Step** | Each `console.log()` in `test.step()` is captured and displayed |
+| 🎬 **Screenshots & Videos** | Auto-captured on failure with inline previews |
+| 📍 **Trace Viewer** | Direct links to Playwright trace files |
+| 🔍 **Filters** | Filter by Priority (P0, P1, P2) and Status (Passed/Failed/Skipped) |
+| ⏱️ **Real-time Updates** | Live console output during test execution |
+
+### Report Screenshot
+
+<p align="center">
+  <img src="docs/images/report.png" alt="TTA Custom Reporter Screenshot" width="800"/>
+</p>
+
+### Usage
+
+The reporter is automatically configured in `playwright.config.ts`:
+
+```typescript
+reporter: [
+    ['./src/utils/CustomTTAReporter.ts'],
+    ['html', { open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
+    ['list'],
+],
+```
+
+### Console Log Capture
+
+Capture console logs in your test steps:
+
+```typescript
+test('example test', async ({ page }) => {
+    await test.step('Verify page title', async () => {
+        const title = await page.title();
+        console.log(`Page Title: ${title}`);  // ← Appears in step's console output
+        expect(title).toBeTruthy();
+    });
+});
+```
+
+Reports are generated in `tta-report/` directory with timestamped filenames.
+
+---
+
 ## 📈 Reports
 
 After running tests, view the HTML report:
@@ -415,7 +475,8 @@ npm run test:report
 
 Reports are generated in:
 
-- `playwright-report/` - HTML report
+- `tta-report/` - Custom TTA HTML reports (recommended)
+- `playwright-report/` - Default Playwright HTML report
 - `test-results/` - JSON results and screenshots
 
 ---
