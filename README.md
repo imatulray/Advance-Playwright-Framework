@@ -481,6 +481,140 @@ Reports are generated in:
 
 ---
 
+## 🐳 Docker Support
+
+Run tests in containerized environments with parallel sharding:
+
+### Using Dockerfile
+
+```bash
+# Build the image
+docker build -t playwright-framework .
+
+# Run all tests
+docker run --rm playwright-framework
+
+# Run smoke tests
+docker run --rm playwright-framework npx playwright test --grep @Smoke
+
+# Run with sharding (shard 1 of 4)
+docker run --rm playwright-framework npx playwright test --shard=1/4
+
+# Mount results directory
+docker run --rm -v $(pwd)/results:/app/test-results playwright-framework
+```
+
+### Using Docker Compose (Parallel Shards)
+
+```bash
+# Run all 4 shards in parallel
+docker-compose up
+
+# Run only smoke tests
+docker-compose up smoke
+
+# Run single shard
+docker-compose up shard-1
+
+# Stop and clean up
+docker-compose down
+```
+
+---
+
+## 🔄 CI/CD Integration
+
+### GitHub Actions
+
+The framework includes pre-configured GitHub Actions workflows:
+
+| Workflow | Trigger | Description |
+|----------|---------|-------------|
+| `playwright.yml` | Push/PR to main, develop | Full test suite with 4 parallel shards |
+| `smoke-tests.yml` | Pull requests | Quick smoke tests (@P0, @Smoke) |
+
+**Features:**
+- ✅ Parallel test execution with sharding
+- ✅ Automatic artifact upload (reports, screenshots)
+- ✅ GitHub Summary with test results
+- ✅ Manual trigger with custom test tags
+
+### Jenkins Pipeline
+
+```bash
+# The Jenkinsfile supports:
+- Parameterized builds (test type, browser, shard count)
+- Docker-based execution
+- HTML report publishing
+- Slack notifications (optional)
+```
+
+---
+
+## 🔧 Code Quality Tools
+
+### ESLint + Prettier
+
+```bash
+# Run linting
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Format code
+npm run format
+
+# Check formatting
+npm run format:check
+```
+
+### Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `.eslintrc.json` | ESLint rules (TypeScript + Playwright) |
+| `.prettierrc` | Code formatting rules |
+| `.editorconfig` | Editor settings consistency |
+
+### Husky + Commitlint
+
+Pre-commit hooks ensure code quality:
+
+```bash
+# Pre-commit hook runs:
+- ESLint on staged files
+- TypeScript type checking
+
+# Commit message validation:
+# Format: type(scope): description
+# Example: feat(login): add remember me functionality
+```
+
+**Valid commit types:**
+`feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+
+---
+
+## 🤖 AI Assistant Support
+
+This framework is optimized for AI-assisted development:
+
+| Tool | Configuration File | Description |
+|------|-------------------|-------------|
+| **Augment Code** | `.augment/rules/` | Framework rules + code standards |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | Copilot-specific instructions |
+| **Cursor AI** | `.cursorrules` | Cursor editor rules |
+| **Windsurf AI** | `.windsurfrules` | Windsurf editor rules |
+
+AI assistants are trained to:
+- Follow 3-layer architecture (Pages → Modules → Tests)
+- Use arrow functions for locators
+- Include test.step() for reporting
+- Apply proper test tags (@P0, @Smoke, etc.)
+
+---
+
 ## 🤝 Contributing
 
 1. Follow the existing architecture patterns
@@ -488,32 +622,41 @@ Reports are generated in:
 3. Put business logic in Modules
 4. Write descriptive test names
 5. Use TypeScript types consistently
-
-### AI Assistant Rules
-
-This project includes rules for AI code assistants:
-
-- 📁 **`.augment/rules/`** - Augment Code AI rules
-- 📁 **`.github/copilot-instructions.md`** - GitHub Copilot instructions
-
-These rules ensure AI assistants follow the framework's patterns when generating code.
+6. Use conventional commit messages
 
 ---
 
-## 📚 Documentation Structure
+## 📚 Project Files Structure
 
 ```
-docs/
-├── ARCHITECTURE.html      # Visual architecture diagram
-└── QUICK_REFERENCE.md     # Commands & best practices
-
-.augment/
-└── rules/
-    ├── framework-rules.md      # Page Object & Module patterns
-    └── code-standards.md       # Coding standards
-
-.github/
-└── copilot-instructions.md    # GitHub Copilot rules
+Playwright_Framework/
+├── .github/
+│   ├── workflows/
+│   │   ├── playwright.yml         # Main CI workflow
+│   │   └── smoke-tests.yml        # PR smoke tests
+│   └── copilot-instructions.md    # GitHub Copilot rules
+├── .augment/rules/
+│   ├── framework-rules.md         # Page Object & Module patterns
+│   └── code-standards.md          # Coding standards
+├── .husky/
+│   ├── pre-commit                 # Pre-commit hooks
+│   └── commit-msg                 # Commit message validation
+├── docs/
+│   ├── images/
+│   │   ├── arch.png               # Architecture diagram
+│   │   └── report.png             # Reporter screenshot
+│   ├── ARCHITECTURE.html          # Visual architecture
+│   └── QUICK_REFERENCE.md         # Commands & best practices
+├── Dockerfile                     # Docker image config
+├── docker-compose.yml             # Docker Compose with sharding
+├── Jenkinsfile                    # Jenkins pipeline
+├── .eslintrc.json                 # ESLint configuration
+├── .prettierrc                    # Prettier configuration
+├── .editorconfig                  # Editor configuration
+├── .cursorrules                   # Cursor AI rules
+├── .windsurfrules                 # Windsurf AI rules
+├── commitlint.config.js           # Commit message rules
+└── playwright.config.ts           # Playwright configuration
 ```
 
 ---
@@ -528,7 +671,7 @@ ISC
 
 **Pramod Dutta**
 - Website: [thetestingacademy.com](https://thetestingacademy.com)
-- GitHub: [@pmdutta](https://github.com/pmdutta)
+- GitHub: [@PramodDutta](https://github.com/PramodDutta)
 
 ---
 

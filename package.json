@@ -12,9 +12,17 @@
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
     "test:mobile": "playwright test --project=mobile-chrome",
+    "test:smoke": "playwright test --grep @Smoke",
+    "test:regression": "playwright test --grep @Regression",
+    "test:p0": "playwright test --grep @P0",
     "test:report": "playwright show-report",
+    "test:ci": "playwright test --reporter=list,json",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
     "build": "tsc",
-    "clean": "rm -rf dist test-results playwright-report"
+    "clean": "rm -rf dist test-results playwright-report tta-report"
   },
   "keywords": [
     "playwright",
