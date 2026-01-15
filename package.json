@@ -1,0 +1,35 @@
+{
+  "name": "playwright_framework",
+  "version": "1.0.0",
+  "description": "A modular, scalable test automation framework built with Playwright and TypeScript",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:mobile": "playwright test --project=mobile-chrome",
+    "test:report": "playwright show-report",
+    "build": "tsc",
+    "clean": "rm -rf dist test-results playwright-report"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "testing",
+    "automation",
+    "e2e"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.6",
+    "dotenv": "^17.2.3",
+    "typescript": "^5.9.3"
+  }
+}
