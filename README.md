@@ -12,6 +12,8 @@ For a comprehensive visual architecture guide, see:
 
 - 📄 **[Architecture Diagram (HTML)](docs/ARCHITECTURE.html)** - Interactive visual documentation
 - 📋 **[Quick Reference Guide](docs/QUICK_REFERENCE.md)** - Commands and best practices
+- 🤖 **[AI Agents + MCP Tutor Docs](docs/ai-agents/index.mdx)** - Class pack, prompts, and guardrails
+- 🧩 **[Agent Instruction Templates](.github/instructions/)** - Planner, Generator, Healer repository rules
 
 ### Architecture Overview
 
@@ -161,6 +163,10 @@ API_TIMEOUT=30000
 | `npm run test:report`   | Show HTML test report          |
 | `npm run build`         | Compile TypeScript             |
 | `npm run clean`         | Clean build artifacts          |
+| `npm run agents:init`   | Scaffold Playwright AI agent instruction files |
+| `npm run rules:check`   | Run framework rule engine on all files |
+| `npm run rules:changed` | Run framework rule engine on changed files |
+| `npm run rules:staged`  | Run framework rule engine on staged files |
 
 ---
 
@@ -585,6 +591,7 @@ Pre-commit hooks ensure code quality:
 # Pre-commit hook runs:
 - ESLint on staged files
 - TypeScript type checking
+- Framework rule engine on staged files
 
 # Commit message validation:
 # Format: type(scope): description
@@ -646,7 +653,14 @@ Playwright_Framework/
 │   │   ├── arch.png               # Architecture diagram
 │   │   └── report.png             # Reporter screenshot
 │   ├── ARCHITECTURE.html          # Visual architecture
-│   └── QUICK_REFERENCE.md         # Commands & best practices
+│   ├── QUICK_REFERENCE.md         # Commands & best practices
+│   └── ai-agents/                 # AI agents + MCP tutorial docs
+├── rules/
+│   └── framework-rule-engine.json # Architecture and placement rules
+├── scripts/
+│   └── rule-engine.js             # Rule engine validator script
+├── skills/
+│   └── playwright-ai-mcp-tutor/   # Reusable tutor skill pack
 ├── Dockerfile                     # Docker image config
 ├── docker-compose.yml             # Docker Compose with sharding
 ├── Jenkinsfile                    # Jenkins pipeline
@@ -658,6 +672,31 @@ Playwright_Framework/
 ├── commitlint.config.js           # Commit message rules
 └── playwright.config.ts           # Playwright configuration
 ```
+
+---
+
+## 🧭 Why We Added Rule Engine and AI/MCP Controls
+
+These additions were made to keep AI-assisted automation deterministic, reviewable, and framework-compliant.
+
+- **Rule Engine (`rules/framework-rule-engine.json` + `scripts/rule-engine.js`)**
+  - Enforces file placement (`Page` -> `src/pages`, `Module/Modal` -> `src/modules`, `spec` -> `src/tests`, utilities -> `src/utils`)
+  - Enforces architecture patterns (no direct locator usage in modules, tags and `test.step()` in specs)
+  - Reduces random code generation and framework drift before code reaches PR review
+
+- **AI Agent Instructions (`.github/instructions/`)**
+  - Defines clear responsibilities for `Planner`, `Generator`, and `Healer`
+  - Keeps generation constrained to repository standards and naming rules
+  - Encourages minimal, evidence-based healing instead of broad rewrites
+
+- **MCP + Tutor Docs (`docs/ai-agents/` and `mint.json`)**
+  - Provides a simple training path for teaching AI-assisted Playwright workflows
+  - Shows prompt templates and validation gates to reduce hallucination risk
+  - Helps new contributors follow the same process from planning to healing
+
+- **Skill Pack (`skills/playwright-ai-mcp-tutor/`)**
+  - Reusable instruction bundle for repeating the same teaching workflow
+  - Standardizes prompts, guardrails, and expected outputs across batches
 
 ---
 

@@ -33,7 +33,7 @@ const paymentInfo: PaymentInfo = {
     cardHolder: testData.validCreditCard.holder,
 };
 
-test.describe('Checkout Feature', () => {
+test.describe('@P0 @Regression @Checkout Checkout Feature', () => {
     let checkoutModule: CheckoutModule;
     let productModule: ProductModule;
     let loginModule: LoginModule;
@@ -47,107 +47,118 @@ test.describe('Checkout Feature', () => {
         await loginModule.doLogin(validUser.username, validUser.password);
     });
 
-    test.describe('Checkout Flow', () => {
+    test.describe('@P0 @Smoke Checkout Flow', () => {
         test('should complete checkout successfully', async () => {
-            // Add product to cart and go to checkout
-            await productModule.buyProductNow(testProduct.id);
+            await test.step('Complete full checkout with valid data', async () => {
+                await productModule.buyProductNow(testProduct.id);
+                const result = await checkoutModule.completeCheckout(shippingInfo, paymentInfo);
 
-            const result = await checkoutModule.completeCheckout(shippingInfo, paymentInfo);
-
-            expect(result.success).toBe(true);
-            expect(result.orderNumber).toBeTruthy();
+                expect(result.success).toBe(true);
+                expect(result.orderNumber).toBeTruthy();
+            });
         });
 
         test('should fill shipping information correctly', async () => {
-            await checkoutModule.goToCheckout();
-            await checkoutModule.fillShippingInfo(shippingInfo);
+            await test.step('Fill shipping information section', async () => {
+                await checkoutModule.goToCheckout();
+                await checkoutModule.fillShippingInfo(shippingInfo);
+            });
         });
 
         test('should fill payment information correctly', async () => {
-            await checkoutModule.goToCheckout();
-            await checkoutModule.fillPaymentInfo(paymentInfo);
+            await test.step('Fill payment information section', async () => {
+                await checkoutModule.goToCheckout();
+                await checkoutModule.fillPaymentInfo(paymentInfo);
+            });
         });
     });
 
-    test.describe('Order Summary', () => {
+    test.describe('@P1 @Regression Order Summary', () => {
         test('should display correct order total', async () => {
-            await productModule.buyProductNow(testProduct.id);
-
-            const total = await checkoutModule.getOrderTotal();
-            expect(total).toBeTruthy();
+            await test.step('Validate order total on checkout summary', async () => {
+                await productModule.buyProductNow(testProduct.id);
+                const total = await checkoutModule.getOrderTotal();
+                expect(total).toBeTruthy();
+            });
         });
 
         test('should display correct cart item count', async () => {
-            await productModule.buyProductNow(testProduct.id);
-
-            const itemCount = await checkoutModule.getCartItemCount();
-            expect(itemCount).toBeGreaterThan(0);
+            await test.step('Validate cart item count in checkout summary', async () => {
+                await productModule.buyProductNow(testProduct.id);
+                const itemCount = await checkoutModule.getCartItemCount();
+                expect(itemCount).toBeGreaterThan(0);
+            });
         });
     });
 
-    test.describe('Promo Codes', () => {
+    test.describe('@P1 @Regression Promo Codes', () => {
         test('should apply valid promo code', async () => {
-            await productModule.buyProductNow(testProduct.id);
+            await test.step('Apply non-expired promo code during checkout', async () => {
+                await productModule.buyProductNow(testProduct.id);
+                const validPromo = promoCodes.find((p: PromoCode) => !p.expired);
+                if (!validPromo) {
+                    return;
+                }
 
-            const validPromo = promoCodes.find((p: PromoCode) => !p.expired);
-            if (validPromo) {
                 await checkoutModule.applyPromoCode(validPromo.code);
-            }
+            });
         });
     });
 
-    test.describe('Navigation', () => {
+    test.describe('@P2 @Regression Navigation', () => {
         test('should navigate back to cart from checkout', async () => {
-            await productModule.buyProductNow(testProduct.id);
-            await checkoutModule.goBackToCart();
+            await test.step('Return to cart from checkout page', async () => {
+                await productModule.buyProductNow(testProduct.id);
+                await checkoutModule.goBackToCart();
+            });
         });
     });
 });
 
-test.describe('Checkout - Using Fixtures', () => {
+test.describe('@P1 @Regression Checkout - Using Fixtures', () => {
     test('should display checkout page elements', async ({ checkoutPage, page }) => {
-        // Setup: Login and navigate to checkout
-        const loginModule = new LoginModule(page);
-        await loginModule.doLogin(validUser.username, validUser.password);
-
-        await checkoutPage.navigate();
-        await checkoutPage.expectOnCheckoutPage();
+        await test.step('Open checkout page and validate critical elements', async () => {
+            const loginModule = new LoginModule(page);
+            await loginModule.doLogin(validUser.username, validUser.password);
+            await checkoutPage.navigate();
+            await checkoutPage.expectOnCheckoutPage();
+        });
     });
 
     test('should enable place order button when form is valid', async ({ checkoutModule, page }) => {
-        // Setup
-        const loginModule = new LoginModule(page);
-        const productModule = new ProductModule(page);
-        
-        await loginModule.doLogin(validUser.username, validUser.password);
-        await productModule.buyProductNow(testProduct.id);
-
-        await checkoutModule.fillShippingInfo(shippingInfo);
-        await checkoutModule.fillPaymentInfo(paymentInfo);
-        await checkoutModule.verifyReadyToPlaceOrder();
+        await test.step('Complete form and validate place-order readiness', async () => {
+            const loginModule = new LoginModule(page);
+            const productModule = new ProductModule(page);
+            await loginModule.doLogin(validUser.username, validUser.password);
+            await productModule.buyProductNow(testProduct.id);
+            await checkoutModule.fillShippingInfo(shippingInfo);
+            await checkoutModule.fillPaymentInfo(paymentInfo);
+            await checkoutModule.verifyReadyToPlaceOrder();
+        });
     });
 });
 
-test.describe('Checkout - Error Handling', () => {
+test.describe('@P1 @Regression Checkout - Error Handling', () => {
     test('should show error with invalid payment', async ({ page }) => {
-        const loginModule = new LoginModule(page);
-        const productModule = new ProductModule(page);
-        const checkoutModule = new CheckoutModule(page);
+        await test.step('Attempt checkout with invalid card details', async () => {
+            const loginModule = new LoginModule(page);
+            const productModule = new ProductModule(page);
+            const checkoutModule = new CheckoutModule(page);
 
-        await loginModule.doLogin(validUser.username, validUser.password);
-        await productModule.buyProductNow(testProduct.id);
+            await loginModule.doLogin(validUser.username, validUser.password);
+            await productModule.buyProductNow(testProduct.id);
 
-        const invalidPayment: PaymentInfo = {
-            cardNumber: testData.invalidCreditCard.number,
-            expiry: testData.invalidCreditCard.expiry,
-            cvc: testData.invalidCreditCard.cvc,
-            cardHolder: testData.invalidCreditCard.holder,
-        };
+            const invalidPayment: PaymentInfo = {
+                cardNumber: testData.invalidCreditCard.number,
+                expiry: testData.invalidCreditCard.expiry,
+                cvc: testData.invalidCreditCard.cvc,
+                cardHolder: testData.invalidCreditCard.holder,
+            };
 
-        const result = await checkoutModule.completeCheckout(shippingInfo, invalidPayment);
+            const result = await checkoutModule.completeCheckout(shippingInfo, invalidPayment);
 
-        expect(result.success).toBe(false);
-        expect(result.errorMessage).toBeTruthy();
+            expect(result.success).toBe(false);
+            expect(result.errorMessage).toBeTruthy();
+        });
     });
 });
-

@@ -9,5 +9,8 @@ npx lint-staged
 echo "📝 Running TypeScript type check..."
 npx tsc --noEmit
 
-echo "✅ Pre-commit checks passed!"
+# Run architecture rule engine on staged files
+echo "🧭 Running framework rule engine on staged files..."
+npm run rules:staged
 
+echo "✅ Pre-commit checks passed!"

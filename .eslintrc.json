@@ -21,21 +21,18 @@
         "es2022": true
     },
     "rules": {
-        // TypeScript Rules
         "@typescript-eslint/explicit-function-return-type": "warn",
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
         "@typescript-eslint/no-floating-promises": "error",
         "@typescript-eslint/await-thenable": "error",
-        
-        // General Rules
+
         "no-console": ["warn", { "allow": ["warn", "error"] }],
         "prefer-const": "error",
         "no-var": "error",
         "eqeqeq": ["error", "always"],
         "curly": ["error", "all"],
-        
-        // Playwright Rules
+
         "playwright/no-focused-test": "error",
         "playwright/no-skipped-test": "warn",
         "playwright/valid-expect": "error",
@@ -51,4 +48,3 @@
         "tta-report/"
     ]
 }
-

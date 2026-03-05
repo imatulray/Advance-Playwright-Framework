@@ -22,7 +22,11 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "build": "tsc",
-    "clean": "rm -rf dist test-results playwright-report tta-report"
+    "clean": "rm -rf dist test-results playwright-report tta-report",
+    "rules:check": "node scripts/rule-engine.js",
+    "rules:changed": "node scripts/rule-engine.js --changed",
+    "rules:staged": "node scripts/rule-engine.js --staged",
+    "agents:init": "npx playwright init-agents"
   },
   "keywords": [
     "playwright",
