@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project File Relationship Map</title>
+    <style>
+        :root {
+            --ink: #18212f;
+            --muted: #617085;
+            --paper: #ffffff;
+            --mist: #f5f7fb;
+            --line: #dfe5ee;
+            --blue: #2563eb;
+            --green: #0f9f6e;
+            --amber: #d97706;
+            --red: #dc4a37;
+            --violet: #7c3aed;
+            --cyan: #0891b2;
+            --slate: #334155;
+            --shadow: 0 18px 50px rgba(31, 42, 68, 0.12);
+            --radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background:
+                linear-gradient(180deg, rgba(245, 247, 251, 0.94), rgba(245, 247, 251, 1)),
+                repeating-linear-gradient(90deg, rgba(37, 99, 235, 0.08) 0 1px, transparent 1px 92px),
+                repeating-linear-gradient(0deg, rgba(15, 159, 110, 0.08) 0 1px, transparent 1px 92px);
+            line-height: 1.55;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .page-shell {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .hero {
+            min-height: 72vh;
+            display: grid;
+            align-items: center;
+            padding: 58px 0 38px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
+            gap: 36px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 34px;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--blue), var(--green));
+        }
+
+        h1 {
+            margin: 18px 0 16px;
+            font-size: clamp(2.45rem, 7vw, 5.2rem);
+            line-height: 0.95;
+            letter-spacing: 0;
+        }
+
+        .hero-copy {
+            max-width: 680px;
+            color: #405066;
+            font-size: 1.08rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 42px;
+            padding: 10px 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: var(--paper);
+            color: var(--ink);
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 8px 25px rgba(31, 42, 68, 0.08);
+        }
+
+        .button.primary {
+            border-color: transparent;
+            background: #172033;
+            color: white;
+        }
+
+        .button .mark {
+            width: 20px;
+            height: 20px;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.16);
+            font-size: 0.75rem;
+        }
+
+        .button:not(.primary) .mark {
+            background: #eef4ff;
+            color: var(--blue);
+        }
+
+        .system-card {
+            border: 1px solid rgba(223, 229, 238, 0.9);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .system-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--line);
+            background: #fbfcff;
+        }
+
+        .system-title {
+            font-weight: 900;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #e8f7f0;
+            color: #076c4c;
+            font-size: 0.78rem;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .status-pill::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .mini-map {
+            padding: 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .node {
+            position: relative;
+            display: grid;
+            grid-template-columns: 38px minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: white;
+        }
+
+        .node::after {
+            content: "";
+            position: absolute;
+            left: 32px;
+            bottom: -13px;
+            width: 2px;
+            height: 12px;
+            background: var(--line);
+        }
+
+        .node:last-child::after {
+            display: none;
+        }
+
+        .node-icon {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            color: white;
+            font-weight: 950;
+            font-size: 0.82rem;
+        }
+
+        .node h2,
+        .node h3,
+        .node p {
+            margin: 0;
+        }
+
+        .node h2,
+        .node h3 {
+            font-size: 0.98rem;
+        }
+
+        .node p {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .blue { background: var(--blue); }
+        .green { background: var(--green); }
+        .amber { background: var(--amber); }
+        .red { background: var(--red); }
+        .violet { background: var(--violet); }
+        .cyan { background: var(--cyan); }
+        .slate { background: var(--slate); }
+
+        section {
+            padding: 34px 0;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 22px;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: clamp(1.5rem, 3vw, 2.35rem);
+            letter-spacing: 0;
+        }
+
+        .section-heading p {
+            max-width: 560px;
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(120px, 1fr));
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .step {
+            position: relative;
+            min-height: 128px;
+            padding: 14px;
+            border-radius: var(--radius);
+            background: var(--mist);
+            border: 1px solid #e7edf6;
+        }
+
+        .step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -11px;
+            width: 10px;
+            height: 2px;
+            background: #b9c4d5;
+            z-index: 2;
+        }
+
+        .step b {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .step span {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .two-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+            gap: 16px;
+        }
+
+        .card {
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: white;
+            box-shadow: 0 12px 38px rgba(31, 42, 68, 0.08);
+            overflow: hidden;
+        }
+
+        .card-pad {
+            padding: 18px;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #edf1f7;
+            margin-bottom: 14px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 950;
+            font-size: 0.78rem;
+            flex: 0 0 auto;
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .file-list {
+            display: grid;
+            gap: 8px;
+            margin: 14px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .file-list li {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 7px;
+            background: #f8fafc;
+            color: #394a61;
+            font-size: 0.9rem;
+        }
+
+        .file-list code,
+        .code-title,
+        code {
+            font-family: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        }
+
+        .file-list li::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--blue);
+            flex: 0 0 auto;
+        }
+
+        .file-list.green-dots li::before { background: var(--green); }
+        .file-list.amber-dots li::before { background: var(--amber); }
+        .file-list.red-dots li::before { background: var(--red); }
+        .file-list.violet-dots li::before { background: var(--violet); }
+        .file-list.cyan-dots li::before { background: var(--cyan); }
+
+        .layer-stack {
+            display: grid;
+            gap: 10px;
+        }
+
+        .layer {
+            display: grid;
+            grid-template-columns: 110px minmax(0, 1fr);
+            gap: 12px;
+            align-items: stretch;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: white;
+        }
+
+        .layer-label {
+            display: grid;
+            place-items: center;
+            min-height: 84px;
+            border-radius: 7px;
+            color: white;
+            font-weight: 950;
+            text-align: center;
+        }
+
+        .layer h3 {
+            margin: 0 0 6px;
+        }
+
+        .layer p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .code-card {
+            background: #152033;
+            color: #dbe8ff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 13px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a9b8cf;
+            font-weight: 800;
+            font-size: 0.86rem;
+        }
+
+        pre {
+            margin: 0;
+            padding: 16px;
+            overflow-x: auto;
+            line-height: 1.6;
+            font-size: 0.86rem;
+        }
+
+        .token-blue { color: #8ecbff; }
+        .token-green { color: #86efac; }
+        .token-amber { color: #facc15; }
+        .token-muted { color: #91a4bd; }
+
+        .tree {
+            padding: 18px;
+            border-radius: 8px;
+            background: #172033;
+            color: #d8e4f5;
+            overflow-x: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .tree pre {
+            padding: 0;
+            font-size: 0.88rem;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 28px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #eef2f7;
+            color: #3a4b61;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .tag::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--blue);
+        }
+
+        .tag.green::before { background: var(--green); }
+        .tag.amber::before { background: var(--amber); }
+        .tag.red::before { background: var(--red); }
+        .tag.violet::before { background: var(--violet); }
+        .tag.cyan::before { background: var(--cyan); }
+
+        .callout {
+            border-left: 5px solid var(--blue);
+            border-radius: 8px;
+            background: #ffffff;
+            padding: 18px;
+            box-shadow: 0 12px 35px rgba(31, 42, 68, 0.08);
+        }
+
+        .callout h3 {
+            margin: 0 0 8px;
+        }
+
+        .callout p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .quick-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .quick-table th,
+        .quick-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .quick-table th {
+            background: #f1f5f9;
+            color: #314156;
+            font-size: 0.86rem;
+        }
+
+        .quick-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .quick-table td {
+            color: var(--muted);
+        }
+
+        .quick-table code {
+            color: var(--ink);
+            font-weight: 800;
+        }
+
+        .footer {
+            padding: 34px 0 48px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 980px) {
+            .hero-grid,
+            .two-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow,
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .step:not(:last-child)::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .page-shell {
+                width: min(100% - 24px, 1180px);
+            }
+
+            .hero {
+                min-height: auto;
+                padding-top: 34px;
+            }
+
+            .workflow,
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-heading {
+                display: block;
+            }
+
+            .section-heading p {
+                margin-top: 8px;
+            }
+
+            .layer {
+                grid-template-columns: 1fr;
+            }
+
+            .layer-label {
+                min-height: 54px;
+            }
+
+            .quick-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-shell">
+        <header class="hero" id="top">
+            <div class="hero-grid">
+                <div>
+                    <div class="eyebrow">Advance Playwright Framework</div>
+                    <h1>How this project fits together</h1>
+                    <p class="hero-copy">
+                        This page maps the files in the repository as a working automation system:
+                        Playwright configuration starts the run, fixtures prepare reusable objects,
+                        tests describe behavior, modules perform workflows, pages touch the UI,
+                        and reports collect the result.
+                    </p>
+                    <nav class="hero-actions" aria-label="Page sections">
+                        <a class="button primary" href="#flow"><span class="mark">1</span>Run flow</a>
+                        <a class="button" href="#layers"><span class="mark">2</span>Layers</a>
+                        <a class="button" href="#folders"><span class="mark">3</span>Folders</a>
+                    </nav>
+                </div>
+
+                <aside class="system-card" aria-label="Project relationship summary">
+                    <div class="system-header">
+                        <div class="system-title">Project map</div>
+                        <div class="status-pill">TypeScript + Playwright</div>
+                    </div>
+                    <div class="mini-map">
+                        <article class="node">
+                            <div class="node-icon slate">NPM</div>
+                            <div>
+                                <h2>package.json</h2>
+                                <p>Defines scripts such as test, build, lint, reports, and rule checks.</p>
+                            </div>
+                        </article>
+                        <article class="node">
+                            <div class="node-icon blue">CFG</div>
+                            <div>
+                                <h2>playwright.config.ts</h2>
+                                <p>Points Playwright at src/tests, chooses reporters, browser projects, retries, traces, and base URL.</p>
+                            </div>
+                        </article>
+                        <article class="node">
+                            <div class="node-icon green">SRC</div>
+                            <div>
+                                <h2>src</h2>
+                                <p>Contains the actual framework: tests, fixtures, pages, modules, APIs, data, config, and utilities.</p>
+                            </div>
+                        </article>
+                        <article class="node">
+                            <div class="node-icon amber">OUT</div>
+                            <div>
+                                <h2>reports and build output</h2>
+                                <p>playwright-report, tta-report, test-results, and dist are generated after runs or builds.</p>
+                            </div>
+                        </article>
+                    </div>
+                </aside>
+            </div>
+        </header>
+
+        <section id="flow" aria-labelledby="flow-title">
+            <div class="section-heading">
+                <h2 id="flow-title">Execution Flow</h2>
+                <p>A typical run moves from command to configuration, into tests, through reusable framework layers, and finally into reports.</p>
+            </div>
+
+            <div class="workflow">
+                <div class="step">
+                    <b>1. Command</b>
+                    <span><code>npm test</code> or another script in <code>package.json</code> starts Playwright.</span>
+                </div>
+                <div class="step">
+                    <b>2. Runner config</b>
+                    <span><code>playwright.config.ts</code> sets <code>testDir</code>, browser project, retries, artifacts, and reporters.</span>
+                </div>
+                <div class="step">
+                    <b>3. Test files</b>
+                    <span><code>src/tests/*.spec.ts</code> describe scenarios and assertions for login, product, checkout, and CURA flows.</span>
+                </div>
+                <div class="step">
+                    <b>4. Fixtures</b>
+                    <span><code>src/fixtures</code> injects page objects, modules, and authenticated browser contexts.</span>
+                </div>
+                <div class="step">
+                    <b>5. Framework layers</b>
+                    <span>Modules call Pages, Pages use Playwright locators, and API classes call request helpers.</span>
+                </div>
+                <div class="step">
+                    <b>6. Output</b>
+                    <span>Playwright HTML, JSON results, screenshots, traces, video, and TTA live reports are written to output folders.</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="layers" aria-labelledby="layers-title">
+            <div class="section-heading">
+                <h2 id="layers-title">The Main Layers</h2>
+                <p>The project separates what a test wants from how the browser or API performs it.</p>
+            </div>
+
+            <div class="two-grid">
+                <div class="layer-stack">
+                    <article class="layer">
+                        <div class="layer-label blue">Tests</div>
+                        <div>
+                            <h3><code>src/tests</code></h3>
+                            <p>Own the scenario names, tags, test steps, and final expectations. They should read like a clear checklist of behavior.</p>
+                        </div>
+                    </article>
+                    <article class="layer">
+                        <div class="layer-label green">Modules</div>
+                        <div>
+                            <h3><code>src/modules</code></h3>
+                            <p>Own business workflows such as logging in, adding a product to cart, buying now, and checkout actions.</p>
+                        </div>
+                    </article>
+                    <article class="layer">
+                        <div class="layer-label amber">Pages</div>
+                        <div>
+                            <h3><code>src/pages</code></h3>
+                            <p>Own locators, single UI interactions, and page-level assertions. <code>BasePage.ts</code> centralizes common page helpers.</p>
+                        </div>
+                    </article>
+                    <article class="layer">
+                        <div class="layer-label violet">Support</div>
+                        <div>
+                            <h3><code>fixtures</code>, <code>testdata</code>, <code>config</code>, <code>utils</code>, <code>api</code></h3>
+                            <p>Wire the layers together, keep data typed, read environment values, support API checks, and generate reports.</p>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="code-card">
+                    <div class="code-header">
+                        <span class="code-title">Example: login.spec.ts relationship</span>
+                        <span>test -> module -> page</span>
+                    </div>
+                    <pre><code><span class="token-muted">// src/tests/login.spec.ts</span>
+<span class="token-blue">import</span> { test, expect } <span class="token-blue">from</span> <span class="token-green">'../fixtures'</span>;
+<span class="token-blue">import</span> { LoginModule } <span class="token-blue">from</span> <span class="token-green">'../modules/LoginModule'</span>;
+<span class="token-blue">import</span> usersData <span class="token-blue">from</span> <span class="token-green">'../testdata/users.json'</span>;
+
+test(<span class="token-green">'should login successfully'</span>, <span class="token-blue">async</span> ({ page }) => {
+  <span class="token-blue">const</span> loginModule = <span class="token-blue">new</span> <span class="token-amber">LoginModule</span>(page);
+  <span class="token-blue">await</span> loginModule.doLogin(username, password);
+  <span class="token-blue">await</span> loginModule.verifyLoggedIn();
+  expect(page.url()).toContain(<span class="token-green">'/home'</span>);
+});</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="folders" aria-labelledby="folders-title">
+            <div class="section-heading">
+                <h2 id="folders-title">Folder Roles</h2>
+                <p>Each folder has a fairly narrow job, which keeps new tests easier to place and existing tests easier to debug.</p>
+            </div>
+
+            <div class="grid">
+                <article class="card">
+                    <div class="card-pad">
+                        <div class="card-top">
+                            <span class="badge blue">T</span>
+                            <h3>Test specifications</h3>
+                        </div>
+                        <p>Behavior-focused Playwright specs for user journeys and assertions.</p>
+                        <ul class="file-list">
+                            <li><code>src/tests/login.spec.ts</code></li>
+                            <li><code>src/tests/product.spec.ts</code></li>
+                            <li><code>src/tests/checkout.spec.ts</code></li>
+                            <li><code>src/tests/katalon/*.spec.ts</code></li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-pad">
+                        <div class="card-top">
+                            <span class="badge green">M</span>
+                            <h3>Business workflows</h3>
+                        </div>
+                        <p>Reusable flow classes that combine multiple page actions into meaningful operations.</p>
+                        <ul class="file-list green-dots">
+                            <li><code>src/modules/LoginModule.ts</code></li>
+                            <li><code>src/modules/ProductModule.ts</code></li>
+                            <li><code>src/modules/CheckoutModule.ts</code></li>
+                            <li><code>src/modules/katalon</code></li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-pad">
+                        <div class="card-top">
+                            <span class="badge amber">P</span>
+                            <h3>Page objects</h3>
+                        </div>
+                        <p>Locators, atomic UI actions, and page assertions. Every page object extends <code>BasePage</code>.</p>
+                        <ul class="file-list amber-dots">
+                            <li><code>src/pages/BasePage.ts</code></li>
+                            <li><code>src/pages/LoginPage.ts</code></li>
+                            <li><code>src/pages/ProductPage.ts</code></li>
+                            <li><code>src/pages/katalon</code></li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-pad">
+                        <div class="card-top">
+                            <span class="badge violet">F</span>
+                            <h3>Fixtures</h3>
+                        </div>
+                        <p>Reusable dependency injection for pages, modules, and authenticated test contexts.</p>
+                        <ul class="file-list violet-dots">
+                            <li><code>src/fixtures/index.ts</code></li>
+                            <li><code>src/fixtures/auth.fixture.ts</code></li>
+                            <li><code>src/fixtures/katalon/index.ts</code></li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-pad">
+                        <div class="card-top">
+                            <span class="badge red">A</span>
+                            <h3>API layer</h3>
+                        </div>
+                        <p>Typed API clients for backend checks, using <code>ApiHelper</code> for request execution and retry behavior.</p>
+                        <ul class="file-list red-dots">
+                            <li><code>src/api/AuthApi.ts</code></li>
+                            <li><code>src/api/ProductApi.ts</code></li>
+                            <li><code>src/api/OrderApi.ts</code></li>
+                            <li><code>src/utils/ApiHelper.ts</code></li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-pad">
+                        <div class="card-top">
+                            <span class="badge cyan">R</span>
+                            <h3>Reporting and helpers</h3>
+                        </div>
+                        <p>Logging, waits, generated data, custom TTA reporting, and report styling/scripts.</p>
+                        <ul class="file-list cyan-dots">
+                            <li><code>src/utils/Logger.ts</code></li>
+                            <li><code>src/utils/WaitHelper.ts</code></li>
+                            <li><code>src/utils/TTAReporter.ts</code></li>
+                            <li><code>src/utils/TTAReportGenerator.ts</code></li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section aria-labelledby="tree-title">
+            <div class="section-heading">
+                <h2 id="tree-title">Simplified Tree</h2>
+                <p>This is the mental model to use when deciding where a new file belongs.</p>
+            </div>
+
+            <div class="tree" role="img" aria-label="Simplified project folder tree">
+                <pre><code>Advance-Playwright-Framework
+|-- package.json              # npm scripts and dependencies
+|-- playwright.config.ts      # Playwright runner settings and reporters
+|-- tsconfig.json             # TypeScript compiler settings
+|-- src
+|   |-- tests                 # scenario specs and assertions
+|   |-- fixtures              # Playwright fixtures and authenticated contexts
+|   |-- modules               # business workflows built from pages
+|   |-- pages                 # page object model classes
+|   |-- api                   # typed API clients
+|   |-- testdata              # JSON data and TypeScript data types
+|   |-- config                # env-aware app configuration
+|   `-- utils                 # logging, waits, API helper, custom reports
+|-- docs                      # architecture and reference documentation
+|-- rules / scripts           # framework rules and rule-engine runner
+|-- skills                    # local AI tutoring skill material
+`-- generated output          # dist, test-results, playwright-report, tta-report</code></pre>
+            </div>
+
+            <div class="legend" aria-label="Color legend">
+                <span class="tag">tests</span>
+                <span class="tag green">modules</span>
+                <span class="tag amber">pages</span>
+                <span class="tag violet">fixtures</span>
+                <span class="tag red">api</span>
+                <span class="tag cyan">reports</span>
+            </div>
+        </section>
+
+        <section aria-labelledby="examples-title">
+            <div class="section-heading">
+                <h2 id="examples-title">How To Read A Test</h2>
+                <p>When you open any spec file, follow the imports first. They show which framework pieces the test relies on.</p>
+            </div>
+
+            <div class="two-grid">
+                <div class="callout">
+                    <h3>UI example</h3>
+                    <p>
+                        <code>login.spec.ts</code> imports <code>LoginModule</code>, <code>users.json</code>, and typed data from
+                        <code>testdata/types.ts</code>. The module creates <code>LoginPage</code> and <code>HomePage</code>,
+                        then calls page-level actions like filling fields, clicking buttons, and checking the user avatar.
+                    </p>
+                </div>
+
+                <div class="callout" style="border-left-color: var(--red);">
+                    <h3>API example</h3>
+                    <p>
+                        <code>ProductApi.ts</code> defines product response types and uses <code>ApiHelper</code> to send HTTP
+                        requests. That keeps API assertions separate from page locators and browser workflows.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section aria-labelledby="decisions-title">
+            <div class="section-heading">
+                <h2 id="decisions-title">Where New Code Goes</h2>
+                <p>A quick placement guide for extending the framework without mixing responsibilities.</p>
+            </div>
+
+            <table class="quick-table">
+                <thead>
+                    <tr>
+                        <th>Need</th>
+                        <th>Put it here</th>
+                        <th>Why</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>New user-facing scenario</td>
+                        <td><code>src/tests/*.spec.ts</code></td>
+                        <td>The test file should name the behavior and hold the final assertions.</td>
+                    </tr>
+                    <tr>
+                        <td>Reusable multi-step browser flow</td>
+                        <td><code>src/modules</code></td>
+                        <td>Modules keep tests readable by hiding repeated business workflows.</td>
+                    </tr>
+                    <tr>
+                        <td>New locator or one-click action</td>
+                        <td><code>src/pages</code></td>
+                        <td>Page objects are the source of truth for how a specific screen is controlled.</td>
+                    </tr>
+                    <tr>
+                        <td>Reusable logged-in state or injected object</td>
+                        <td><code>src/fixtures</code></td>
+                        <td>Fixtures share setup without duplicating it in every spec.</td>
+                    </tr>
+                    <tr>
+                        <td>Static input data</td>
+                        <td><code>src/testdata</code></td>
+                        <td>Data files keep test values separate from test logic and allow TypeScript typing.</td>
+                    </tr>
+                    <tr>
+                        <td>Environment setting</td>
+                        <td><code>.env</code>, <code>.env.example</code>, <code>src/config/index.ts</code></td>
+                        <td>Config centralizes URLs, credentials, timeouts, retry counts, and log level.</td>
+                    </tr>
+                    <tr>
+                        <td>Run output or debugging artifact</td>
+                        <td><code>test-results</code>, <code>playwright-report</code>, <code>tta-report</code></td>
+                        <td>These are generated folders produced by Playwright and the custom reporter.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer class="footer">
+            <p>Generated as a local visual companion for this repository. Open <code>project.html</code> whenever you want the file map without reading the whole codebase first.</p>
+        </footer>
+    </main>
+</body>
+</html>

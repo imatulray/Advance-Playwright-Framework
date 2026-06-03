@@ -13,7 +13,6 @@
 #
 # =============================================================================
 
-version: '3.8'
 
 services:
   # Base service configuration (not run directly)

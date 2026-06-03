@@ -1,11 +1,7 @@
-import { expect, Page } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class HomePage {
-    private page: Page;
-
-    constructor(page: Page) {
-        this.page = page;
-    }
+export class HomePage extends BasePage {
 
     // ============================================
     // LOCATORS (as arrow functions)

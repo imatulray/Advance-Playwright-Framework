@@ -59,6 +59,7 @@ test.describe('@P1 @Regression @Login Login Feature', () => {
             await test.step('Attempt login with empty username', async () => {
                 const emptyUsername = invalidUsers.find((u: InvalidUser) => u.username === '');
                 if (!emptyUsername) {
+                    test.skip(true, 'No empty-username test data entry found');
                     return;
                 }
 
@@ -74,6 +75,7 @@ test.describe('@P1 @Regression @Login Login Feature', () => {
             await test.step('Attempt login with empty password', async () => {
                 const emptyPassword = invalidUsers.find((u: InvalidUser) => u.password === '');
                 if (!emptyPassword) {
+                    test.skip(true, 'No empty-password test data entry found');
                     return;
                 }
 

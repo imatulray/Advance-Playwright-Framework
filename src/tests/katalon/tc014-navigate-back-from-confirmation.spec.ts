@@ -1,7 +1,7 @@
 // spec: cura-make-appointment.test-plan.md
 // seed: Lecture_Playwright_AI_Agents/web_vwo/seed.spec.js
 
-import { test, expect } from '../../fixtures/katalon';
+import { test } from '../../fixtures/katalon';
 import { CuraAppointmentModule } from '../../modules/katalon/CuraAppointmentModule';
 import curaData from '../../testdata/katalon/cura-data.json';
 import { CuraTestData } from '../../testdata/katalon/cura-types';
@@ -15,11 +15,11 @@ test.describe('E2E - Successful Make Appointment Flow', () => {
         curaHomePage,
         curaConfirmationPage,
     }) => {
-        const module = new CuraAppointmentModule(page);
+        const appointmentModule = new CuraAppointmentModule(page);
 
         // 1. Complete the full appointment booking flow
         await test.step('Complete appointment booking to reach confirmation', async () => {
-            await module.navigateToAppointmentForm(validUser.username, validUser.password);
+            await appointmentModule.navigateToAppointmentForm(validUser.username, validUser.password);
             await page.locator('#combo_facility').selectOption('Tokyo CURA Healthcare Center');
             await page.locator('#radio_program_medicare').check();
             await page.locator('#txt_visit_date').fill('25/03/2026');

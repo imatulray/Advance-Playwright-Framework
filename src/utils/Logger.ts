@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- Logger is the designated console wrapper for this project */
 export enum LogLevel {
     DEBUG = 'DEBUG',
     INFO = 'INFO',

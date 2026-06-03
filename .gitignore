@@ -16,8 +16,10 @@ playwright/.cache/
 *.swo
 
 # Environment
-.env.local
-.env.*.local
+.env
+.env.*
+!.env.example
+.auth/
 
 # OS
 .DS_Store
@@ -29,4 +31,7 @@ npm-debug.log*
 
 # Coverage
 coverage/
+
+# Reports
+tta-report
 

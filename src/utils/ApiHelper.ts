@@ -39,7 +39,7 @@ export class ApiHelper {
      * Build full URL with query parameters
      */
     private buildUrl(url: string, params?: Record<string, string>): string {
-        if (!params) return url;
+        if (!params) {return url;}
         const searchParams = new URLSearchParams(params);
         return `${url}?${searchParams.toString()}`;
     }

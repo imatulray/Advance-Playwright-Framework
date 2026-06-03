@@ -71,14 +71,14 @@ export class ProductApi {
     async getProducts(params?: ProductSearchParams): Promise<ProductListResponse> {
         const queryParams: Record<string, string> = {};
         
-        if (params?.query) queryParams.query = params.query;
-        if (params?.category) queryParams.category = params.category;
-        if (params?.minPrice) queryParams.minPrice = params.minPrice.toString();
-        if (params?.maxPrice) queryParams.maxPrice = params.maxPrice.toString();
-        if (params?.page) queryParams.page = params.page.toString();
-        if (params?.pageSize) queryParams.pageSize = params.pageSize.toString();
-        if (params?.sortBy) queryParams.sortBy = params.sortBy;
-        if (params?.sortOrder) queryParams.sortOrder = params.sortOrder;
+        if (params?.query) {queryParams.query = params.query;}
+        if (params?.category) {queryParams.category = params.category;}
+        if (params?.minPrice) {queryParams.minPrice = params.minPrice.toString();}
+        if (params?.maxPrice) {queryParams.maxPrice = params.maxPrice.toString();}
+        if (params?.page) {queryParams.page = params.page.toString();}
+        if (params?.pageSize) {queryParams.pageSize = params.pageSize.toString();}
+        if (params?.sortBy) {queryParams.sortBy = params.sortBy;}
+        if (params?.sortOrder) {queryParams.sortOrder = params.sortOrder;}
 
         const response = await this.apiHelper.callApi({
             url: `${this.baseUrl}/api/products`,

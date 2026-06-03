@@ -1,11 +1,7 @@
-import { expect, Page } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class LoginPage {
-    private page: Page;
-
-    constructor(page: Page) {
-        this.page = page;
-    }
+export class LoginPage extends BasePage {
 
     // ============================================
     // LOCATORS (as arrow functions)
@@ -78,20 +74,6 @@ export class LoginPage {
      */
     async getErrorMessage(): Promise<string> {
         return (await this.errorMessage().textContent()) || '';
-    }
-
-    /**
-     * Get the page title text
-     */
-    async getPageTitle(): Promise<string> {
-        return (await this.pageTitle().textContent()) || '';
-    }
-
-    /**
-     * Clear the username field
-     */
-    async clearUsername(): Promise<void> {
-        await this.usernameInput().clear();
     }
 
     /**

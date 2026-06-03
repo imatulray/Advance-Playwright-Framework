@@ -1,7 +1,7 @@
 // spec: cura-make-appointment.test-plan.md
 // seed: Lecture_Playwright_AI_Agents/web_vwo/seed.spec.js
 
-import { test, expect } from '../../fixtures/katalon';
+import { test } from '../../fixtures/katalon';
 
 test.describe('E2E - Successful Make Appointment Flow', () => {
     test('TC-003: Verify login page elements and labels', async ({ curaHomePage, curaLoginPage }) => {

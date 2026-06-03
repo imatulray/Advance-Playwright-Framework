@@ -81,13 +81,9 @@ export const test = base.extend<TestFixtures>({
         const context = await browser.newContext();
         const page = await context.newPage();
 
-        // Perform login
-        const loginPage = new LoginPage(page);
-        await loginPage.navigate();
-        await loginPage.enterUsername(config.testUser.username);
-        await loginPage.enterPassword(config.testUser.password);
-        await loginPage.clickLogin();
-        await page.waitForURL('**/home');
+        // Delegate to LoginModule (single source of truth for login flow)
+        const loginModule = new LoginModule(page);
+        await loginModule.doLogin(config.testUser.username, config.testUser.password);
 
         await use(page);
         await context.close();

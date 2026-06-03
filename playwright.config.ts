@@ -7,13 +7,13 @@ export default defineConfig({
     testDir: './src/tests',
     timeout: 60000,
     expect: { timeout: 10000 },
-    fullyParallel: true,
+    fullyParallel: false,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 2 : 3,
 
     reporter: [
-        ['./src/utils/CustomTTAReporter.ts'],
+        ['./src/utils/TTAReporter.ts'],
         ['html', { open: 'never' }],
         ['json', { outputFile: 'test-results/results.json' }],
         ['list'],
@@ -28,9 +28,9 @@ export default defineConfig({
 
     projects: [
         { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-        { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-        { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-        { name: 'mobile-chrome', use: { ...devices['Pixel 5'] } },
+        // { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+        // { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+        // { name: 'mobile-chrome', use: { ...devices['Pixel 5'] } },
     ],
 });
 

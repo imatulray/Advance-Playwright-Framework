@@ -24,36 +24,12 @@ export interface AppConfig {
 }
 
 /**
- * Application configuration loaded from environment variables
+ * Returns environment-specific URL/retry overrides based on NODE_ENV.
+ * Values are always driven by environment variables first.
  */
-export const config: AppConfig = {
-    // Base URLs
-    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
-    apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000/api',
-    
-    // Timeouts
-    apiTimeout: parseInt(process.env.API_TIMEOUT || '30000', 10),
-    defaultTimeout: parseInt(process.env.DEFAULT_TIMEOUT || '30000', 10),
-    
-    // Test credentials
-    testUser: {
-        username: process.env.TEST_USERNAME || 'testuser@example.com',
-        password: process.env.TEST_PASSWORD || 'SecurePass123',
-    },
-    
-    // Logging
-    logLevel: process.env.LOG_LEVEL || 'INFO',
-    
-    // Retry configuration
-    retryCount: parseInt(process.env.RETRY_COUNT || '3', 10),
-};
+function getEnvironmentConfig(): Partial<AppConfig> {
+    const environment = process.env.NODE_ENV || 'development';
 
-/**
- * Get environment-specific configuration
- */
-export function getEnvironmentConfig(env?: string): Partial<AppConfig> {
-    const environment = env || process.env.NODE_ENV || 'development';
-    
     switch (environment) {
         case 'production':
             return {
@@ -78,7 +54,35 @@ export function getEnvironmentConfig(env?: string): Partial<AppConfig> {
 }
 
 /**
- * Test data configuration
+ * Application configuration.
+ *
+ * Base values come from environment variables (or .env file).
+ * Environment-specific URL/retry overrides (NODE_ENV=staging|production)
+ * are merged on top, but testUser credentials always come from env vars.
+ */
+const _testUser: TestUser = {
+    username: process.env.TEST_USERNAME || '',
+    password: process.env.TEST_PASSWORD || '',
+};
+
+export const config: AppConfig = Object.assign(
+    {
+        baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+        apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000/api',
+        apiTimeout: parseInt(process.env.API_TIMEOUT || '30000', 10),
+        defaultTimeout: parseInt(process.env.DEFAULT_TIMEOUT || '30000', 10),
+        testUser: _testUser,
+        logLevel: process.env.LOG_LEVEL || 'INFO',
+        retryCount: parseInt(process.env.RETRY_COUNT || '3', 10),
+    },
+    // Apply environment-specific URL + retryCount overrides
+    getEnvironmentConfig(),
+    // testUser always wins — env vars take priority over any env override
+    { testUser: _testUser },
+);
+
+/**
+ * Static test data (non-sensitive fixtures used in tests)
  */
 export const testData = {
     validCreditCard: {
@@ -112,4 +116,3 @@ export const testData = {
 };
 
 export default config;
-

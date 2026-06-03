@@ -59,6 +59,7 @@ test.describe('@P1 @Regression @Product Product Feature', () => {
             await test.step('Add product to cart with size option when available', async () => {
                 const clothingProduct = products.find((p: Product) => p.sizes && p.sizes.length > 0);
                 if (!clothingProduct || !clothingProduct.sizes) {
+                    test.skip(true, 'No product with sizes found in test data');
                     return;
                 }
                 await productModule.addProductToCart(clothingProduct.id, {
@@ -72,6 +73,7 @@ test.describe('@P1 @Regression @Product Product Feature', () => {
             await test.step('Add product to cart with color option when available', async () => {
                 const colorProduct = products.find((p: Product) => p.colors && p.colors.length > 0);
                 if (!colorProduct || !colorProduct.colors) {
+                    test.skip(true, 'No product with colors found in test data');
                     return;
                 }
                 await productModule.addProductToCart(colorProduct.id, {
@@ -103,6 +105,7 @@ test.describe('@P1 @Regression @Product Product Feature', () => {
                     (p: Product) => p.sizes && p.sizes.length > 0 && p.colors && p.colors.length > 0
                 );
                 if (!clothingProduct || !clothingProduct.sizes || !clothingProduct.colors) {
+                    test.skip(true, 'No product with both sizes and colors found in test data');
                     return;
                 }
                 await productModule.buyProductNow(clothingProduct.id, {

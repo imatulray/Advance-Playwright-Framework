@@ -2,7 +2,6 @@
 // seed: Lecture_Playwright_AI_Agents/web_vwo/seed.spec.js
 
 import { test, expect } from '../../fixtures/katalon';
-import { CuraAppointmentModule } from '../../modules/katalon/CuraAppointmentModule';
 import curaData from '../../testdata/katalon/cura-data.json';
 import { CuraTestData } from '../../testdata/katalon/cura-types';
 
@@ -11,7 +10,6 @@ const { validUser, defaultAppointment } = data;
 
 test.describe('E2E - Successful Make Appointment Flow', () => {
     test('TC-001: Complete end-to-end successful appointment booking', async ({ page }) => {
-        const module = new CuraAppointmentModule(page);
 
         // 1. Navigate to https://katalon-demo-cura.herokuapp.com/
         await test.step('Navigate to CURA Healthcare homepage', async () => {

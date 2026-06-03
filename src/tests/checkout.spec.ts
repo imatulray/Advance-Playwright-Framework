@@ -2,7 +2,7 @@ import { test, expect } from '../fixtures';
 import { CheckoutModule, ShippingInfo, PaymentInfo } from '../modules/CheckoutModule';
 import { ProductModule } from '../modules/ProductModule';
 import { LoginModule } from '../modules/LoginModule';
-import { config, testData } from '../config';
+import { testData } from '../config';
 import productsData from '../testdata/products.json';
 import usersData from '../testdata/users.json';
 import { UsersData, ProductsData, PromoCode } from '../testdata/types';
@@ -97,6 +97,7 @@ test.describe('@P0 @Regression @Checkout Checkout Feature', () => {
                 await productModule.buyProductNow(testProduct.id);
                 const validPromo = promoCodes.find((p: PromoCode) => !p.expired);
                 if (!validPromo) {
+                    test.skip(true, 'No valid (non-expired) promo code found in test data');
                     return;
                 }
 
